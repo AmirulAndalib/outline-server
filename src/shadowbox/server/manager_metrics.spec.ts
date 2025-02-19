@@ -41,6 +41,19 @@ describe('PrometheusManagerMetrics', () => {
     const managerMetrics = new PrometheusManagerMetrics(
       new QueryMapPrometheusClient(
         {
+          'sum(rate(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[300s]))': {
+            resultType: 'vector',
+            result: [
+              {
+                metric: {
+                  location: 'US',
+                  asn: '49490',
+                  asorg: 'Test AS Org',
+                },
+                value: [1739284734, '1234'],
+              },
+            ],
+          },
           'sum(increase(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[0s])) by (location, asn, asorg)':
             {
               resultType: 'vector',
@@ -93,6 +106,22 @@ describe('PrometheusManagerMetrics', () => {
           },
         },
         {
+          'sum(rate(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[300s]))': {
+            resultType: 'matrix',
+            result: [
+              {
+                metric: {
+                  location: 'US',
+                  asn: '49490',
+                  asorg: 'Test AS Org',
+                },
+                values: [
+                  [1738959398, '5678'],
+                  [1739284734, '1234'],
+                ],
+              },
+            ],
+          },
           'sum(increase(shadowsocks_data_bytes{dir=~"c<p|p>t"}[300s])) by (access_key)': {
             resultType: 'matrix',
             result: [
@@ -102,7 +131,7 @@ describe('PrometheusManagerMetrics', () => {
                 },
                 values: [
                   [1738959398, '1000'],
-                  [1738959398, '2000'],
+                  [1739284734, '2000'],
                 ],
               },
             ],
@@ -116,7 +145,7 @@ describe('PrometheusManagerMetrics', () => {
                 },
                 values: [
                   [1738959398, '1000'],
-                  [1738959398, '0'],
+                  [1739284734, '0'],
                 ],
               },
             ],
@@ -128,19 +157,41 @@ describe('PrometheusManagerMetrics', () => {
     const serverMetrics = await managerMetrics.getServerMetrics({seconds: 0});
 
     expect(JSON.stringify(serverMetrics, null, 2)).toEqual(`{
-  "server": [
-    {
-      "location": "US",
-      "asn": 49490,
-      "asOrg": "Test AS Org",
-      "dataTransferred": {
-        "bytes": 1000
+  "server": {
+    "tunnelTime": {
+      "seconds": 1000
+    },
+    "dataTransferred": {
+      "bytes": 1000
+    },
+    "bandwidth": {
+      "current": {
+        "data": {
+          "bytes": 1234
+        },
+        "timestamp": 1739284734
       },
-      "tunnelTime": {
-        "seconds": 1000
+      "peak": {
+        "data": {
+          "bytes": 5678
+        },
+        "timestamp": 1738959398
       }
-    }
-  ],
+    },
+    "locations": [
+      {
+        "location": "US",
+        "asn": 49490,
+        "asOrg": "Test AS Org",
+        "dataTransferred": {
+          "bytes": 1000
+        },
+        "tunnelTime": {
+          "seconds": 1000
+        }
+      }
+    ]
+  },
   "accessKeys": [
     {
       "accessKeyId": 0,
@@ -151,10 +202,9 @@ describe('PrometheusManagerMetrics', () => {
         "seconds": 1000
       },
       "connection": {
-        "lastConnected": 1738959398,
-        "lastTrafficSeen": 1738959398,
-        "peakDevices": {
-          "count": 4,
+        "lastTrafficSeen": 1739284734,
+        "peakDeviceCount": {
+          "data": 4,
           "timestamp": 1738959398
         }
       }
@@ -168,6 +218,19 @@ describe('PrometheusManagerMetrics', () => {
     const managerMetrics = new PrometheusManagerMetrics(
       new QueryMapPrometheusClient(
         {
+          'sum(rate(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[300s]))': {
+            resultType: 'vector',
+            result: [
+              {
+                metric: {
+                  location: 'US',
+                  asn: '49490',
+                  asorg: 'Test AS Org',
+                },
+                value: [1739284734, '1234'],
+              },
+            ],
+          },
           'sum(increase(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[0s])) by (location, asn, asorg)':
             {
               resultType: 'vector',
@@ -218,6 +281,22 @@ describe('PrometheusManagerMetrics', () => {
           },
         },
         {
+          'sum(rate(shadowsocks_data_bytes_per_location{dir=~"c<p|p>t"}[300s]))': {
+            resultType: 'matrix',
+            result: [
+              {
+                metric: {
+                  location: 'US',
+                  asn: '49490',
+                  asorg: 'Test AS Org',
+                },
+                values: [
+                  [1738959398, '5678'],
+                  [1739284734, '1234'],
+                ],
+              },
+            ],
+          },
           'sum(increase(shadowsocks_data_bytes{dir=~"c<p|p>t"}[300s])) by (access_key)': {
             resultType: 'matrix',
             result: [
@@ -253,30 +332,52 @@ describe('PrometheusManagerMetrics', () => {
     const serverMetrics = await managerMetrics.getServerMetrics({seconds: 0});
 
     expect(JSON.stringify(serverMetrics, null, 2)).toEqual(`{
-  "server": [
-    {
-      "location": "CA",
-      "asn": null,
-      "asOrg": null,
-      "dataTransferred": {
-        "bytes": 0
+  "server": {
+    "tunnelTime": {
+      "seconds": 1000
+    },
+    "dataTransferred": {
+      "bytes": 1000
+    },
+    "bandwidth": {
+      "current": {
+        "data": {
+          "bytes": 1234
+        },
+        "timestamp": 1739284734
       },
-      "tunnelTime": {
-        "seconds": 1000
+      "peak": {
+        "data": {
+          "bytes": 5678
+        },
+        "timestamp": 1738959398
       }
     },
-    {
-      "location": "US",
-      "asn": 49490,
-      "asOrg": "Test AS Org",
-      "dataTransferred": {
-        "bytes": 1000
+    "locations": [
+      {
+        "location": "CA",
+        "asn": null,
+        "asOrg": null,
+        "dataTransferred": {
+          "bytes": 0
+        },
+        "tunnelTime": {
+          "seconds": 1000
+        }
       },
-      "tunnelTime": {
-        "seconds": 0
+      {
+        "location": "US",
+        "asn": 49490,
+        "asOrg": "Test AS Org",
+        "dataTransferred": {
+          "bytes": 1000
+        },
+        "tunnelTime": {
+          "seconds": 0
+        }
       }
-    }
-  ],
+    ]
+  },
   "accessKeys": [
     {
       "accessKeyId": 1,
@@ -287,10 +388,9 @@ describe('PrometheusManagerMetrics', () => {
         "seconds": 1000
       },
       "connection": {
-        "lastConnected": null,
         "lastTrafficSeen": null,
-        "peakDevices": {
-          "count": 0,
+        "peakDeviceCount": {
+          "data": 0,
           "timestamp": null
         }
       }
@@ -304,10 +404,9 @@ describe('PrometheusManagerMetrics', () => {
         "seconds": 0
       },
       "connection": {
-        "lastConnected": 1738959398,
         "lastTrafficSeen": 1738959398,
-        "peakDevices": {
-          "count": 4,
+        "peakDeviceCount": {
+          "data": 4,
           "timestamp": 1738959398
         }
       }
